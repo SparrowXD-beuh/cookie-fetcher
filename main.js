@@ -1,5 +1,5 @@
 const express = require("express");
-const puppeteer = require("puppeteer");
+const { puppeteer } = require("puppeteer");
 const { MongoClient } = require("mongodb");
 require('dotenv').config();
 
@@ -17,10 +17,10 @@ app.get("/cookies", async (req, res) => {
     res.send({cookies});
 })
 
-let storedCookies = [];
+
 async function fetchCookies() {
   const database = new MongoClient(`mongodb+srv://admin:${process.env.PASS}@freecluster.7xu0m7g.mongodb.net/?retryWrites=true&w=majority`);
-  await database.connect();
+  (database.connect()).then(() => console.log("database connected"));
 
   try {
     const browser = await puppeteer.launch({
@@ -46,11 +46,12 @@ async function fetchCookies() {
     await page.click("#view_product_page_btn");
     await page.waitForNavigation("https://store.steampowered.com/app/1938090/Call_of_Duty/",{ timeout: 180000 })
   
-    storedCookies = await page.cookies();
+    const storedCookies = await page.cookies();
     console.log(storedCookies);
     await database.db("steam").collection("cookies").deleteMany({});
     await database.db("steam").collection("cookies").insertOne({_id: "cookies", cookies: storedCookies, timestamp: new Date()});
     await browser.close();
+    return storedCookies, console.log("Succesfully refreshed cookies");
   } catch (error) {
     console.error(error);
   }
