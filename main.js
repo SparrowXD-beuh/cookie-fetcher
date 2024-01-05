@@ -44,7 +44,7 @@ async function fetchCookies() {
     );
     await page.select("#ageYear", "1980");
     await page.click("#view_product_page_btn");
-    await page.waitForNetworkIdle({ timeout: 180000 });
+    await page.waitForNavigation("https://store.steampowered.com/app/1938090/Call_of_Duty/",{ timeout: 180000 })
   
     storedCookies = await page.cookies();
     console.log(storedCookies);
