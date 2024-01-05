@@ -12,12 +12,6 @@ app.get("/", (req, res) => {
     res.send("seems to be working fine.");
 })
 
-app.get("/cookies", async (req, res) => {
-    const cookies = await fetchCookies();
-    res.send({cookies: cookies});
-})
-
-
 async function fetchCookies() {
   const database = new MongoClient(`mongodb+srv://admin:${process.env.PASS}@freecluster.7xu0m7g.mongodb.net/?retryWrites=true&w=majority`);
   (database.connect()).then(() => console.log("database connected"));
@@ -56,3 +50,8 @@ async function fetchCookies() {
     console.error(error);
   }
 }
+
+app.get("/cookies", async (req, res) => {
+    const cookies = await fetchCookies();
+    res.send({cookies: cookies});
+})
