@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 
 app.get("/cookies", async (req, res) => {
     const cookies = await fetchCookies();
-    req.send({cookies});
+    res.send({cookies});
 })
 
 let storedCookies = [];
@@ -23,6 +23,7 @@ async function fetchCookies() {
   await database.connect();
 
   const browser = await puppeteer.launch({
+    headless: "new",
     args: [
       "--disable-setuid-sandbox",
       "--no-sandbox",
@@ -39,11 +40,11 @@ async function fetchCookies() {
     const page = await browser.newPage();
     await page.goto(
       "https://store.steampowered.com/agecheck/app/1938090/",
-      { timeout: 60000 }
+      { timeout: 180000 }
     );
     await page.select("#ageYear", "1980");
     await page.click("#view_product_page_btn");
-    await page.waitForNavigation({ waitUntil: "networkidle0", timeout: 90000 });
+    await page.waitForNavigation({ waitUntil: "networkidle0", timeout: 180000 });
   
     storedCookies = await page.cookies();
     console.log(storedCookies);
