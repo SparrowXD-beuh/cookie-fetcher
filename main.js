@@ -1,7 +1,21 @@
+const express = require("express");
 const puppeteer = require("puppeteer");
 const { MongoClient } = require("mongodb");
 require('dotenv').config();
 
+const app = express();
+app.listen(process.env.PORT || 3000, async () => {
+    console.log("app online");
+})
+
+app.get("/", (req, res) => {
+    res.send("seems to be working fine.");
+})
+
+app.get("/cookies", async (req, res) => {
+    const cookies = await fetchCookies();
+    req.send({cookies});
+})
 
 let storedCookies = [];
 async function fetchCookies() {
@@ -19,28 +33,25 @@ async function fetchCookies() {
       process.env.NODE_ENV === "production"
         ? process.env.PUPPETEER_EXECUTABLE_PATH
         : puppeteer.executablePath(),
-    timeout: 90000,
+    timeout: 1200000,
   });
-  const page = await browser.newPage();
-  await page.goto(
-    "https://store.steampowered.com/agecheck/app/1938090/",
-    { timeout: 60000 }
-  );
-  await page.select("#ageYear", "1980");
-  await page.click("#view_product_page_btn");
-  await page.waitForNavigation({ waitUntil: "networkidle0", timeout: 90000 });
-
-  storedCookies = await page.cookies();
-  console.log(storedCookies);
-  await database.db("steam").collection("cookies").deleteMany({});
-  await database.db("steam").collection("cookies").insertOne({_id: "cookies", cookies: storedCookies, timestamp: new Date()});
-  browser.close();
+  try {
+    const page = await browser.newPage();
+    await page.goto(
+      "https://store.steampowered.com/agecheck/app/1938090/",
+      { timeout: 60000 }
+    );
+    await page.select("#ageYear", "1980");
+    await page.click("#view_product_page_btn");
+    await page.waitForNavigation({ waitUntil: "networkidle0", timeout: 90000 });
+  
+    storedCookies = await page.cookies();
+    console.log(storedCookies);
+    await database.db("steam").collection("cookies").deleteMany({});
+    await database.db("steam").collection("cookies").insertOne({_id: "cookies", cookies: storedCookies, timestamp: new Date()});
+  } catch (error) {
+    console.error(error);
+  } finally {
+    browser.close();
+  }
 }
-
-setInterval(async () => {
-  fetchCookies();
-}, 360000);
-
-(async () => {
-  fetchCookies();
-})();
