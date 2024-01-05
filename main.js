@@ -32,17 +32,19 @@ async function fetchCookies() {
     timeout: 1200000,
     });
     const page = await browser.newPage();
-    await new Promise((resolve) => {
+    const domContentLoadedPromise = await new Promise((resolve) => {
         page.once('domcontentloaded', resolve);
     });
+    await domContentLoadedPromise;
     await page.goto(
       "https://store.steampowered.com/agecheck/app/1938090/",
       { timeout: 180000 }
     );
+    await domContentLoadedPromise;
     await page.select("#ageYear", "1980");
     await page.click("#view_product_page_btn");
     await page.waitForNavigation("https://store.steampowered.com/app/1938090/Call_of_Duty/",{ timeout: 180000 })
-  
+    await domContentLoadedPromise;
     const storedCookies = await page.cookies();
     console.log(storedCookies);
     await database.db("steam").collection("cookies").deleteMany({});
