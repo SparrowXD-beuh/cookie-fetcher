@@ -1,5 +1,5 @@
 const express = require("express");
-const { puppeteer } = require("puppeteer");
+const puppeteer = require("puppeteer");
 const { MongoClient } = require("mongodb");
 require('dotenv').config();
 
@@ -14,7 +14,7 @@ app.get("/", (req, res) => {
 
 app.get("/cookies", async (req, res) => {
     const cookies = await fetchCookies();
-    res.send({cookies});
+    res.send({cookies: cookies});
 })
 
 
