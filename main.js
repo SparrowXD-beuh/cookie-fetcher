@@ -32,6 +32,9 @@ async function fetchCookies() {
     timeout: 1200000,
     });
     const page = await browser.newPage();
+    await new Promise((resolve) => {
+        page.once('domcontentloaded', resolve);
+    });
     await page.goto(
       "https://store.steampowered.com/agecheck/app/1938090/",
       { timeout: 180000 }
