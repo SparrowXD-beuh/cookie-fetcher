@@ -1,13 +1,15 @@
+const path = require('path');
 require('dotenv').config()
 const chromium = require("chrome-aws-lambda");
 
 async function fetchCookies() {
     try {
+        const chromePath = path.resolve(__dirname, 'chrome.exe')
         const browser = await chromium.puppeteer.launch({
             headless: 'new',
             args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
             defaultViewport: null,
-            executablePath: "./chrome.exe",
+            executablePath: chromePath,
             headless: true,
             ignoreHTTPSErrors: true,
         })
