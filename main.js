@@ -7,7 +7,7 @@ async function fetchCookies() {
             headless: 'new',
             args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
             defaultViewport: null,
-            executablePath: await chromium.executablePath,
+            executablePath: "./chrome.exe",
             headless: true,
             ignoreHTTPSErrors: true,
         })
