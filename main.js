@@ -4,9 +4,9 @@ const chromium = require("chrome-aws-lambda");
 async function fetchCookies() {
     try {
         const browser = await chromium.puppeteer.launch({
-            headless: false,
+            headless: 'new',
             args: [...chromium.args, "--hide-scrollbars", "--disable-web-security"],
-            defaultViewport: chromium.defaultViewport,
+            defaultViewport: null,
             executablePath: await chromium.executablePath,
             headless: true,
             ignoreHTTPSErrors: true,
