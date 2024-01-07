@@ -22,8 +22,8 @@ async function fetchCookies() {
         await page.waitForNavigation("https://store.steampowered.com/app/1938090/Call_of_Duty/",{ timeout: 180000 })
         const storedCookies = await page.cookies();
         // console.log({storedCookies});
-        client.db("steam").collection("cookies").deleteMany({});
-        client.db("steam").collection("cookies").insertOne({_id: "cookies", cookies: storedCookies, timestamp: new Date()});
+        await client.db("steam").collection("cookies").deleteMany({});
+        await client.db("steam").collection("cookies").insertOne({_id: "cookies", cookies: storedCookies, timestamp: new Date()});
         await browser.close();
         return storedCookies;
     } catch (error) {
